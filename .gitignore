@@ -23,3 +23,6 @@ android/.idea/*
 
 # ios
 ios/build/*
+
+# yarn
+yarn.lock
