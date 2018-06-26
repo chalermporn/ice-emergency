@@ -26,5 +26,6 @@ ios/build/*
 
 # yarn
 yarn.lock
+package-lock.json
 
 .idea
