@@ -4,7 +4,7 @@ import {
   APP_NAME, 
   COLOR_WHITE, 
   COLOR_BLACK, 
-  COLOR_BULE, 
+  COLOR_BLUE, 
   COLOR_RED, 
   COLOR_GREEN, 
   COLOR_GRAY, 
@@ -54,8 +54,8 @@ class HomeScreen extends Component {
               </View>
             </View>
           </View>
-          <View style={styles.MyMessageBox}>
-            <MyMessage color={COLOR_BULE} >สถานการณ์ปกติ NORMAL SITUATION</MyMessage>
+          <View style={[styles.MyMessageBox, {}]}>
+            <MyMessage color={COLOR_BLUE} >สถานการณ์ปกติ NORMAL SITUATION</MyMessage>
           </View>
 
           <View style={{

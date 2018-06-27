@@ -34,11 +34,11 @@ export default class AuthScreen extends Component {
   state = {
     username: 'SOMPONG.KRA',
     password: 'password',
-    noti_token: '00000',
+    noti_token: '1111111',
   };
 
   componentWillMount() {
-    AsyncStorage.clear();
+    // AsyncStorage.clear();
     showData = async () => {
       const myA = await AsyncStorage.getItem('myProfile');
       const d = JSON.parse(myA);
