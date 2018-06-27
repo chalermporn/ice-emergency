@@ -34,7 +34,7 @@ export default class AuthScreen extends Component {
   state = {
     username: 'SOMPONG.KRA',
     password: 'password',
-    noti_token: '00000',
+    noti_token: '1111111',
   };
 
   componentWillMount() {
