@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 
+
 import com.android.build.OutputFile
 
 /**
@@ -94,13 +95,13 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 26
+    buildToolsVersion "26.0.0"
 
     defaultConfig {
         applicationId "com.iceemergency"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         ndk {
@@ -137,9 +138,13 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-fcm')
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.android.support:appcompat-v7:23.0.1"
+    implementation "com.android.support:appcompat-v7:26.0.0"
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'com.google.firebase:firebase-core:16.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.0.0'
 }
 
 // Run this once to be able to run the application with BUCK
@@ -147,4 +152,18 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+
+apply plugin: 'com.google.gms.google-services'
+com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '26.0.0'
+            }
+        }
+    }
 }
