@@ -7,7 +7,7 @@ import {
   APP_NAME, 
   COLOR_WHITE, 
   COLOR_BLACK, 
-  COLOR_BULE, 
+  COLOR_BLUE, 
   COLOR_RED, 
   COLOR_GREEN, 
   COLOR_GRAY, 

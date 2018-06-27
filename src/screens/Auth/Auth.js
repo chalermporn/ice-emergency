@@ -38,7 +38,7 @@ export default class AuthScreen extends Component {
   };
 
   componentWillMount() {
-    AsyncStorage.clear();
+    // AsyncStorage.clear();
     showData = async () => {
       const myA = await AsyncStorage.getItem('myProfile');
       const d = JSON.parse(myA);
