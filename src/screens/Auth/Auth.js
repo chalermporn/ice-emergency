@@ -28,6 +28,7 @@ import logoImage from '../../../assets/img/logo_ice.png';
 import logoTextImage from '../../../assets/img/logo-text.png';
 import logoEncoFImage from '../../../assets/img/logo-ecno-powered-by.png';
 import stylesApp from '../../styles/v1.0/app';
+import loadProfile from '../../utility/localStorage';
 
 export default class AuthScreen extends Component {
   static navigatorStyle = { navBarHidden: true, animationType: 'fade' };
@@ -37,17 +38,15 @@ export default class AuthScreen extends Component {
     noti_token: '1111111',
   };
 
-  componentWillMount() {
+  componentDidMount() {
     // AsyncStorage.clear();
-    showData = async () => {
-      const myA = await AsyncStorage.getItem('myProfile');
-      const d = JSON.parse(myA);
-      // console.warn(d.email);
-      if (d.success) {
-        startMainTabs();
-      }
-    };
-    showData();
+    if (loadProfile('success') !== false) {
+      startMainTabs();
+    }
+    loadProfile('FirstName');
+    loadProfile('LastName');
+    loadProfile('img_profile');
+    loadProfile('success');
   }
 
 
