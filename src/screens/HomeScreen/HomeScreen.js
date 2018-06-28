@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, Button, Platform, StyleSheet, Image, ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
+import FCM, { FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType } from 'react-native-fcm';
 import {
   APP_NAME, 
   COLOR_WHITE, 
@@ -20,13 +21,34 @@ import profileImage from '../../../assets/img/bird.jpg';
 import MyMessage from '../../components/MyMessage/MyMessage';
 import MyButtonLayout from '../../components/MyButtonType/MyButtonLayout';
 
+
 const widthScreen = Dimensions.get('window').width;
 const heightScreen = Dimensions.get('window').height;
 class HomeScreen extends Component {
-  componentDidUpdate() {
+  componentDidMount() {
     const window = Dimensions.get('window');
     console.warn('width:', window.width, 'height:', window.height);
+    
+    // test();
+    FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
+    
+    FCM.getFCMToken().then((token) => {
+      console.log(token);
+      // store fcm token in your server
+    });
+    
+    FCM.on(FCMEvent.Notification, async (notif) => {
+      console.log(notif);
+      if (notif.opened_from_tray && notif.collapse_key === 'com.iceemergency') {
+        alert('check from server');
+        console.log(notif);
+      } else if (!notif.opened_from_tray) {
+        this.placeSubmitHandler();
+      }
+    });
   }
+  
+  
   placeSubmitHandler = () => {
     this.props.navigator.push({
       screen: 'IAmSafeScreen',
@@ -37,6 +59,8 @@ class HomeScreen extends Component {
       navBarLeftButtonFontWeight: '400', // Change font weight of left nav bar button
     });
   };
+
+
   render() {
     return (
       <View style={{ justifyContent: 'center' }}> 
@@ -166,5 +190,6 @@ const styles = StyleSheet.create({
  
 
 });
+
 
 export default HomeScreen;

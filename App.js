@@ -1,6 +1,7 @@
 import { Navigation } from 'react-native-navigation';
 import configureStore from './src/store/configureStore';
 
+
 import AuthScreen from './src/screens/Auth/Auth';
 import ForGotPasswordScreen from './src/screens/Auth/ForGotPassword';
 import HomeScreen from './src/screens/HomeScreen/HomeScreen';
@@ -42,3 +43,4 @@ Navigation.startSingleScreenApp({
   },
 
 });
+
