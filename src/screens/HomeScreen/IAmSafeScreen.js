@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, Button, Platform, StyleSheet, Image, ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
+import FCM, { FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType } from 'react-native-fcm';
+
 import {
   APP_NAME, 
   COLOR_WHITE, 
@@ -27,9 +29,20 @@ class IAmSafeScreen extends Component {
   static navigatorStyle = {
     tabBarHidden: false, navBarBackgroundColor: COLOR_RED, title: 'ALERT', navBarLeftButtonColor: '#fff', 
   };
-  componentDidUpdate() {
+  componentDidMount() {
     const window = Dimensions.get('window');
     console.warn('width:', window.width, 'height:', window.height);
+    FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
+  
+    FCM.on(FCMEvent.Notification, async (notif) => {
+      console.log('หน้า สอง', notif);
+      if (notif.opened_from_tray && notif.collapse_key === 'com.iceemergency') {
+        alert('check from server');
+        console.log(notif);
+      } else if (!notif.opened_from_tray) {
+        alert(notif);
+      }
+    });
   }
   placeSubmitHandler = () => {
     if (Platform.OS === 'ios') {

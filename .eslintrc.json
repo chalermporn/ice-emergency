@@ -34,7 +34,8 @@
         "react/jsx-no-bind":[0],
         "react/no-unused-prop-types":[0],
         "react/no-unused-state":[0],
-        "max-len":[0]
+        "max-len":[0],
+        "react/sort-comp":[0]
         
     }
 }

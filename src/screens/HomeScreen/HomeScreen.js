@@ -20,15 +20,23 @@ import backgroundImage from '../../../assets/img/bg.png';
 import profileImage from '../../../assets/img/bird.jpg';
 import MyMessage from '../../components/MyMessage/MyMessage';
 import MyButtonLayout from '../../components/MyButtonType/MyButtonLayout';
-
+import { storeSaveData } from '../../utility/localStorage';
 
 const widthScreen = Dimensions.get('window').width;
 const heightScreen = Dimensions.get('window').height;
 class HomeScreen extends Component {
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
+  }
+  onNavigatorEvent = (event) => {
+    console.log(event.id);
+  }
+
+  componentDidUpdate() {
     const window = Dimensions.get('window');
     console.warn('width:', window.width, 'height:', window.height);
-    
+    console.warn('ok');
     // test();
     FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
     
@@ -53,6 +61,7 @@ class HomeScreen extends Component {
     this.props.navigator.push({
       screen: 'IAmSafeScreen',
       title: 'ALERT',
+      id: 'alertFire',
       navBarHidden: true,
       navBarLeftButtonFontSize: 17, // Change font size of left nav bar button
       navBarLeftButtonColor: 'red', // Change color of left nav bar button

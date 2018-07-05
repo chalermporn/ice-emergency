@@ -28,7 +28,7 @@ import logoImage from '../../../assets/img/logo_ice.png';
 import logoTextImage from '../../../assets/img/logo-text.png';
 import logoEncoFImage from '../../../assets/img/logo-ecno-powered-by.png';
 import stylesApp from '../../styles/v1.0/app';
-import loadProfile from '../../utility/localStorage';
+import { storeSaveData } from '../../utility/localStorage';
 
 export default class AuthScreen extends Component {
   static navigatorStyle = { navBarHidden: true, animationType: 'fade' };
@@ -36,19 +36,14 @@ export default class AuthScreen extends Component {
     username: 'SOMPONG.KRA',
     password: 'password',
     noti_token: '1111111',
+    profile: [],
   };
 
-  componentDidMount() {
-    // AsyncStorage.clear();
-    if (loadProfile('success') !== false) {
-      startMainTabs();
-    }
-    loadProfile('FirstName');
-    loadProfile('LastName');
-    loadProfile('img_profile');
-    loadProfile('success');
+  async componentWillMount() {
+    const myA = await AsyncStorage.getItem('myProfile');
+    const d = JSON.parse(myA);
+    console.warn(d.email);
   }
-
 
   saveLocalStorage = (profile) => {
     AsyncStorage.setItem('myProfile', JSON.stringify(profile));
@@ -74,7 +69,6 @@ export default class AuthScreen extends Component {
         alert(res.data.message);
       }
     });
-    // startMainTabs();
   }
   forGotPasswordhHandlePress = () => {
     this.props.navigator.push({
@@ -89,6 +83,7 @@ export default class AuthScreen extends Component {
     const myA = await AsyncStorage.getItem('myProfile');
     const d = JSON.parse(myA);
     console.warn(d.email);
+    console.log(d.email);
   }
 
   render() {
@@ -116,9 +111,9 @@ export default class AuthScreen extends Component {
             <ButtonWithBackground color="#273673" fontColor="#fff" onPress={this.loginHandler}>
               <Text style={{ textAlign: 'center' }}> Sign In </Text>
             </ButtonWithBackground>
-            {/* <ButtonWithBackground color="#273673" fontColor="#fff" onPress={this.showData}>
+            <ButtonWithBackground color="#273673" fontColor="#fff" onPress={this.showData}>
               <Text style={{ textAlign: 'center' }}> Sign InshowData </Text>
-            </ButtonWithBackground> */}
+            </ButtonWithBackground>
           </View>
           <Layout2>
             <View style={{ width: 165, height: 30 }}>

@@ -27,7 +27,7 @@ const MyMessage = props => (
       <Text style={styles.headLineInstructions}>
           Emergency Instructions.
       </Text>
-      <ScrollView style={{ height: 55, width: Platform.OS === 'ios' ? ((widthScreen * 83) / 100) : ((widthScreen * 83) / 100) }}>
+      <ScrollView style={{ height: widthScreen <= 360 ? 55 : 55, width: Platform.OS === 'ios' ? ((widthScreen * 83) / 100) : ((widthScreen * 83) / 100) }}>
         <Text style={styles.messageTextInstructions}>
               1. อ่านคำแจ้งเตือน / Follow alert notifications.{'\n'}
               2. สแกน QR-CODE หรือ กดเช็คอิน / Scan QR Code or Check in to identify your status.{'\n'}
@@ -43,27 +43,27 @@ const styles = StyleSheet.create({
   myContainer: {
     backgroundColor: '#fff',
     padding: 15,
-    height: 210,
+    height: widthScreen <= 360 ? 180 : 210,
   },
   headLine: {
     fontFamily: KANIT01,
-    fontSize: 25,
+    fontSize: widthScreen <= 360 ? 20 : 25,
     alignSelf: 'center',
   },
   messageText: {
     fontFamily: KANIT00,
-    fontSize: 16,
+    fontSize: widthScreen <= 360 ? 14 : 16,
     marginTop: 10,
     alignSelf: 'center',
-    height: 45,
+    height: widthScreen <= 360 ? 40 : 45,
   },
   Instructions: {
     
   },
   headLineInstructions: {
     fontFamily: KANIT01,
-    marginTop: 15,
-    fontSize: 14,
+    marginTop: widthScreen <= 360 ? 0 : 15,
+    fontSize: widthScreen <= 360 ? 14 : 14,
   },
   messageTextInstructions: {
     fontSize: 13,
