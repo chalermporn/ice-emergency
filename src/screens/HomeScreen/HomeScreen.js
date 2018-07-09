@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, Button, Platform, StyleSheet, Image, ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, Platform, StyleSheet, Image, ImageBackground, Dimensions, TouchableOpacity, AsyncStorage } from 'react-native';
 import FCM, { FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType } from 'react-native-fcm';
 import {
   APP_NAME, 
@@ -28,6 +28,24 @@ class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
+    this.state = {
+      username: '',
+      password: '',
+      FirstName: '',
+      LastName: '',
+      ImgProfile: '',
+      Company: '',
+      Department: '',
+      EmployeeNumber: '',
+      Phone: '',
+      PhoneEmer: '',
+      email: '',
+      Building: '',
+      Floor: '',
+      
+
+    };
+    this.validAuthen();
   }
   onNavigatorEvent = (event) => {
     console.log(event.id);
@@ -69,21 +87,85 @@ class HomeScreen extends Component {
     });
   };
 
+  async validAuthen() {
+    console.log('HOme');
+    // AsyncStorage.clear();
+    const dUsername = await AsyncStorage.getItem('username');
+    const dPassword = await AsyncStorage.getItem('password');
+    const dSuccess = await AsyncStorage.getItem('success');
+    const dActive = await AsyncStorage.getItem('active');
+    console.log('dUsername : ', dUsername);
+    console.log('dPassword : ', dPassword);
+    console.log('dSuccess : ', dSuccess);
+    console.log('dActive : ', dActive);
 
+    // await AsyncStorage.setItem('FirstName', result.FirstName);
+    // await AsyncStorage.setItem('LastName', result.LastName);
+    // await AsyncStorage.setItem('EmployeeNumber', result.EmployeeNumber);
+    // await AsyncStorage.setItem('Phone', result.Phone);
+    // await AsyncStorage.setItem('PhoneEmer', result.PhoneEmer);
+    // await AsyncStorage.setItem('email', result.email);
+    // await AsyncStorage.setItem('Company', result.Company);
+    // await AsyncStorage.setItem('Department', result.Department);
+    // await AsyncStorage.setItem('Building', result.Building);
+    // await AsyncStorage.setItem('Floor', result.Floor);
+    // await AsyncStorage.setItem('DateOfBirth', result.DateOfBirth);
+    // await AsyncStorage.setItem('Allergies', result.Allergies);
+    // await AsyncStorage.setItem('Bloodtype', result.Bloodtype);
+    // await AsyncStorage.setItem('Weight', result.Weight);
+    // await AsyncStorage.setItem('Height', result.Height);
+    // await AsyncStorage.setItem('username', result.username);
+    // await AsyncStorage.setItem('password', result.password);
+    // await AsyncStorage.setItem('img_profile', result.img_profile);
+    // await AsyncStorage.setItem('active', result.LastName);
+    // await AsyncStorage.setItem('noti_token', result.noti_token);
+    // await AsyncStorage.setItem('token', result.token);
+    // await AsyncStorage.setItem('qrCode', result.qrCode);
+    // await AsyncStorage.setItem('message', result.message);
+
+    const dFirstName = await AsyncStorage.getItem('FirstName');
+    const dLastName = await AsyncStorage.getItem('LastName');
+    const dImgProfile = await AsyncStorage.getItem('img_profile');
+    const dDepartment = await AsyncStorage.getItem('Department');
+    const dCompany = await AsyncStorage.getItem('Company');
+    const dEmployeeNumber = await AsyncStorage.getItem('EmployeeNumber');
+    const dPhone = await AsyncStorage.getItem('Phone');
+    const dPhoneEmer = await AsyncStorage.getItem('PhoneEmer');
+    const demail = await AsyncStorage.getItem('email');
+    const dBuilding = await AsyncStorage.getItem('Building');
+    const dFloor = await AsyncStorage.getItem('Floor');
+
+    this.setState({ username: dUsername });
+    this.setState({ FirstName: dFirstName });
+    this.setState({ LastName: dLastName });
+    this.setState({ ImgProfile: dImgProfile });
+    this.setState({ Company: dCompany });
+    this.setState({ Department: dDepartment });
+    this.setState({ EmployeeNumber: dEmployeeNumber });
+    this.setState({ Phone: dPhone });
+    this.setState({ PhoneEmer: dPhoneEmer });
+    this.setState({ email: demail });
+    this.setState({ Building: dBuilding });
+    this.setState({ Floor: dFloor });
+  }
   render() {
     return (
       <View style={{ justifyContent: 'center' }}> 
         <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
           <View style={styles.myContainer}>
             <View style={styles.myContainerImg}>
-              <Image source={profileImage} style={{ width: 100, height: 100, borderRadius: 68 }} />
+              {/* <Image source={profileImage} style={{ width: 100, height: 100, borderRadius: 68 }} /> */}
+              <Image
+                style={{ width: 100, height: 100, borderRadius: 68 }}
+                source={{ uri: `data:image/png;base64,${this.state.ImgProfile}` }}
+              />
             </View>
             <View style={styles.MyNames}>
-              <Text style={styles.MyNamesText}>Chalermporn Pos.</Text>
-              <Text style={styles.MyNamesSubText}>ENCO | G FL. 093-949-9289</Text>
+              <Text style={styles.MyNamesText}>{this.state.username}</Text>
+              <Text style={styles.MyNamesSubText}>{this.state.Company} | {this.state.Floor} FL. {this.state.Phone}</Text>
               <View style={styles.CallContact}>
                 <Text style={styles.Emergency}>Emergency Contact </Text>
-                <Text style={styles.MyNamesSubText}>093-949-9289</Text>
+                <Text style={styles.MyNamesSubText}>{this.state.PhoneEmer}</Text>
               </View>
             </View>
           </View>
@@ -108,7 +190,7 @@ class HomeScreen extends Component {
                 <Text style={{ fontFamily: KANIT02, fontSize: 20, color: '#fff' }}>I AM SAFE</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.placeSubmitHandler} >
+            <TouchableOpacity onPress={() => AsyncStorage.clear()} >
               <View style={{
  width: 160, height: 160, backgroundColor: COLOR_RED, alignItems: 'center', justifyContent: 'center', marginLeft: 5,
 }}
@@ -191,13 +273,13 @@ const styles = StyleSheet.create({
     width: 189,
     height: 36,
   },
+
   myContainerX: {
     backgroundColor: '#fff',
     padding: 15,
     height: 210,
   },
  
-
 });
 
 

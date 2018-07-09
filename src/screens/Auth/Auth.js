@@ -12,6 +12,7 @@ import {
   Platform,
   AsyncStorage,
   Keyboard,
+  TouchableHighlight,
 } from 'react-native';
 import axios from 'axios';
 import startMainTabs from '../MainTabs/startMainTabs';
@@ -32,44 +33,102 @@ import { storeSaveData } from '../../utility/localStorage';
 
 export default class AuthScreen extends Component {
   static navigatorStyle = { navBarHidden: true, animationType: 'fade' };
-  state = {
-    username: 'SOMPONG.KRA',
-    password: 'password',
-    noti_token: '1111111',
-    profile: [],
-  };
 
-  async componentWillMount() {
-    const myA = await AsyncStorage.getItem('myProfile');
-    const d = JSON.parse(myA);
-    console.warn(d.email);
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: '',
+      notiToken: '000000',
+    };
+
+    this.validAuthen();
   }
 
-  saveLocalStorage = (profile) => {
-    AsyncStorage.setItem('myProfile', JSON.stringify(profile));
-    Keyboard.dismiss();
-  };
 
-  loginHandler = () => {
-    console.log(this.state);
-    axios.post('http://122.155.9.76:8080/login', {
-      username: this.state.username,
-      password: this.state.password,
-      noti_token: '00000',
-    }).then((res) => {
-      console.log(res);
-      if (res.data.success) {
-        console.log('True');
-        this.setState({ isLoggingIn: true, message: '' });
-        // alert(res.data.message);
-        this.saveLocalStorage(res.data);
-        startMainTabs();
-      } else {
-        console.log('False');
-        alert(res.data.message);
-      }
-    });
+  async validAuthen() {
+    // AsyncStorage.clear();
+    const dUsername = await AsyncStorage.getItem('username');
+    const dPassword = await AsyncStorage.getItem('password');
+    const dSuccess = await AsyncStorage.getItem('success');
+    const dActive = await AsyncStorage.getItem('active');
+    console.log('dUsername : ', dUsername);
+    console.log('dPassword : ', dPassword);
+    console.log('dSuccess : ', dSuccess);
+    console.log('dActive : ', dActive);
+    // this.goHomeScreen();
+    if (dSuccess === 'true') {
+      this.goHomeScreen();
+    }
   }
+
+
+  goHomeScreen = () => {
+    startMainTabs();
+  }
+  async loginHandler() {
+    console.log('on click');
+    const { username, password, notiToken } = this.state;
+    const data = { username, password, noti_token: notiToken };
+    
+    console.log(`data: ${JSON.stringify(data)}`);
+    
+    axios.post('http://122.155.9.76:8080/login', data)
+      .then(async (response) => {
+        console.log(`response: ${JSON.stringify(response)}`);
+        const result = response.data;
+        if (result.success) {
+          // save token
+
+          await AsyncStorage.setItem('username', result.username);
+          await AsyncStorage.setItem('password', result.password);
+
+          await AsyncStorage.setItem('success', 'true');
+          if (result.active === 1) {
+            await AsyncStorage.setItem('active', '1');
+          }
+
+          await AsyncStorage.setItem('FirstName', result.FirstName);
+          await AsyncStorage.setItem('LastName', result.LastName);
+          await AsyncStorage.setItem('EmployeeNumber', result.EmployeeNumber);
+          await AsyncStorage.setItem('Phone', result.Phone);
+          await AsyncStorage.setItem('PhoneEmer', result.PhoneEmer);
+          await AsyncStorage.setItem('email', result.email);
+          await AsyncStorage.setItem('Company', result.Company);
+          await AsyncStorage.setItem('Department', result.Department);
+          await AsyncStorage.setItem('Building', result.Building);
+          await AsyncStorage.setItem('Floor', result.Floor);
+          await AsyncStorage.setItem('DateOfBirth', result.DateOfBirth);
+          await AsyncStorage.setItem('Allergies', result.Allergies);
+          await AsyncStorage.setItem('Bloodtype', result.Bloodtype);
+          await AsyncStorage.setItem('Weight', result.Weight);
+          await AsyncStorage.setItem('Height', result.Height);
+          await AsyncStorage.setItem('username', result.username);
+          await AsyncStorage.setItem('password', result.password);
+          await AsyncStorage.setItem('img_profile', result.img_profile);
+          await AsyncStorage.setItem('active', result.LastName);
+          await AsyncStorage.setItem('noti_token', result.noti_token);
+          await AsyncStorage.setItem('token', result.token);
+          await AsyncStorage.setItem('qrCode', result.qrCode);
+          await AsyncStorage.setItem('message', result.message);
+
+          // show successful alert
+          Alert.alert(
+            'Login Successful', '',
+            [
+              { text: 'OK', onPress: () => startMainTabs() },
+            ],
+          );
+        } else {
+          Alert.alert('Login Failed');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+
   forGotPasswordhHandlePress = () => {
     this.props.navigator.push({
       screen: 'ForGotPasswordScreen',
@@ -78,13 +137,7 @@ export default class AuthScreen extends Component {
       animationType: 'fade',
     });
   };
-
-  showData = async () => {
-    const myA = await AsyncStorage.getItem('myProfile');
-    const d = JSON.parse(myA);
-    console.warn(d.email);
-    console.log(d.email);
-  }
+ 
 
   render() {
     return (
@@ -92,28 +145,44 @@ export default class AuthScreen extends Component {
         <View style={styles.container}>
           <LogoICE />
           <View style={styles.inputContainer}>
-            <DefaultInput
+            {/* <DefaultInput
+
               placeholder="Username"
               style={styles.input}
               value={this.state.username}
               onChangeText={username => this.setState({ username })}
-            />
-            <DefaultInput
-              placeholder="Password"
+            /> */}
+            {/* <DefaultInput
+                placeholder="Password"
+                style={styles.input}
+                value={this.state.password}
+                onChangeText={password => this.setState({ password })}
+                secureTextEntry
+              /> */}
+            <TextInput
+              onChangeText={text => this.setState({ username: text })}
+              // keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
               style={styles.input}
-              value={this.state.password}
-              onChangeText={password => this.setState({ password })}
+              placeholder="Username"
+              underlineColorAndroid="transparent"
+            />
+            <TextInput
+              onChangeText={text => this.setState({ password: text })}
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={styles.input}
               secureTextEntry
+              placeholder="Password"
             />
             <Text style={[{ textAlign: 'right' }, stylesApp.defaltText]} onPress={this.forGotPasswordhHandlePress}> forgot
               password? 
             </Text>
-            <ButtonWithBackground color="#273673" fontColor="#fff" onPress={this.loginHandler}>
+            <ButtonWithBackground color="#273673" fontColor="#fff" onPress={this.loginHandler.bind(this)}>
               <Text style={{ textAlign: 'center' }}> Sign In </Text>
             </ButtonWithBackground>
-            <ButtonWithBackground color="#273673" fontColor="#fff" onPress={this.showData}>
-              <Text style={{ textAlign: 'center' }}> Sign InshowData </Text>
-            </ButtonWithBackground>
+            
           </View>
           <Layout2>
             <View style={{ width: 165, height: 30 }}>
@@ -161,5 +230,23 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: '#fff',
     borderColor: '#ccc',
+    width: '95%',
+    // borderWidth: 1,
+    borderBottomWidth: 1.5,
+    padding: 10,
+    margin: 8,
+  },
+  loginButton: {
+    height: 50,
+    backgroundColor: '#48BBEC',
+    alignSelf: 'stretch',
+    marginTop: 40,
+    borderRadius: 10,
+    justifyContent: 'center',
+  },
+  loginButtonText: {
+    fontSize: 22,
+    color: '#FFF',
+    alignSelf: 'center',
   },
 });
