@@ -42,8 +42,6 @@ class HomeScreen extends Component {
       email: '',
       Building: '',
       Floor: '',
-      
-
     };
     this.validAuthen();
   }
@@ -59,14 +57,14 @@ class HomeScreen extends Component {
     FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
     
     FCM.getFCMToken().then((token) => {
-      console.log(token);
+      console.log('token: ', token);
       // store fcm token in your server
     });
     
     FCM.on(FCMEvent.Notification, async (notif) => {
       console.log(notif);
       if (notif.opened_from_tray && notif.collapse_key === 'com.iceemergency') {
-        alert('check from server');
+        // alert('check from server');
         console.log(notif);
       } else if (!notif.opened_from_tray) {
         this.placeSubmitHandler();
@@ -94,10 +92,12 @@ class HomeScreen extends Component {
     const dPassword = await AsyncStorage.getItem('password');
     const dSuccess = await AsyncStorage.getItem('success');
     const dActive = await AsyncStorage.getItem('active');
+    const dId = await AsyncStorage.getItem('Id');
     console.log('dUsername : ', dUsername);
     console.log('dPassword : ', dPassword);
     console.log('dSuccess : ', dSuccess);
     console.log('dActive : ', dActive);
+    console.log('dId : ', dId);
 
     // await AsyncStorage.setItem('FirstName', result.FirstName);
     // await AsyncStorage.setItem('LastName', result.LastName);
@@ -116,7 +116,7 @@ class HomeScreen extends Component {
     // await AsyncStorage.setItem('Height', result.Height);
     // await AsyncStorage.setItem('username', result.username);
     // await AsyncStorage.setItem('password', result.password);
-    // await AsyncStorage.setItem('img_profile', result.img_profile);
+    // await AsyncStorage.setItem('imgProfile', result.imgProfile);
     // await AsyncStorage.setItem('active', result.LastName);
     // await AsyncStorage.setItem('noti_token', result.noti_token);
     // await AsyncStorage.setItem('token', result.token);
@@ -125,7 +125,7 @@ class HomeScreen extends Component {
 
     const dFirstName = await AsyncStorage.getItem('FirstName');
     const dLastName = await AsyncStorage.getItem('LastName');
-    const dImgProfile = await AsyncStorage.getItem('img_profile');
+    const dImgProfile = await AsyncStorage.getItem('imgProfile');
     const dDepartment = await AsyncStorage.getItem('Department');
     const dCompany = await AsyncStorage.getItem('Company');
     const dEmployeeNumber = await AsyncStorage.getItem('EmployeeNumber');
@@ -157,7 +157,8 @@ class HomeScreen extends Component {
               {/* <Image source={profileImage} style={{ width: 100, height: 100, borderRadius: 68 }} /> */}
               <Image
                 style={{ width: 100, height: 100, borderRadius: 68 }}
-                source={{ uri: `data:image/png;base64,${this.state.ImgProfile}` }}
+                // source={{ uri: this.state.ImgProfile }}
+                source={{ uri: this.state.ImgProfile }}
               />
             </View>
             <View style={styles.MyNames}>
@@ -174,17 +175,17 @@ class HomeScreen extends Component {
           </View>
 
           <View style={{
- justifyContent: 'center', alignItems: 'center', flexDirection: 'row', flex: 1, 
-}}
+          justifyContent: 'center', alignItems: 'center', flexDirection: 'row', flex: 1, 
+          }}
           > 
-            <TouchableOpacity onPress={this.placeSubmitHandler} >
+            <TouchableOpacity onPress={this.placeSubmitHandler} disabled={false}>
               <View style={{
- width: 160, height: 160, backgroundColor: COLOR_GREEN, alignItems: 'center', justifyContent: 'center', marginRight: 5,
-}}
+              width: 160, height: 160, backgroundColor: COLOR_GREEN, alignItems: 'center', justifyContent: 'center', marginRight: 5,
+              }}
               >
                 <Text style={{
- fontFamily: KANIT02, fontSize: 30, color: '#fff', justifyContent: 'center', alignContent: 'center', alignItems: 'center', 
-}}
+                fontFamily: KANIT02, fontSize: 30, color: '#fff', justifyContent: 'center', alignContent: 'center', alignItems: 'center', 
+                }}
                 >ปลอดภัย
                 </Text>
                 <Text style={{ fontFamily: KANIT02, fontSize: 20, color: '#fff' }}>I AM SAFE</Text>
@@ -192,12 +193,12 @@ class HomeScreen extends Component {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => AsyncStorage.clear()} >
               <View style={{
- width: 160, height: 160, backgroundColor: COLOR_RED, alignItems: 'center', justifyContent: 'center', marginLeft: 5,
-}}
+              width: 160, height: 160, backgroundColor: COLOR_RED, alignItems: 'center', justifyContent: 'center', marginLeft: 5,
+              }}
               >
                 <Text style={{
- fontFamily: KANIT02, fontSize: 30, color: '#fff', lineHeight: 30, 
-}}
+                fontFamily: KANIT02, fontSize: 30, color: '#fff', lineHeight: 30, 
+                }}
                 >ขอความ{'\n'}ช่วยเหลือ
                 </Text>
                 <Text style={{ fontFamily: KANIT02, fontSize: 20, color: '#fff' }}>Help</Text>

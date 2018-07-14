@@ -27,7 +27,7 @@ const MyMessage = props => (
       <Text style={styles.headLineInstructions}>
           Emergency Instructions.
       </Text>
-      <ScrollView style={{ height: widthScreen <= 360 ? 55 : 55, width: Platform.OS === 'ios' ? ((widthScreen * 83) / 100) : ((widthScreen * 83) / 100) }}>
+      <ScrollView style={{ height: widthScreen <= 360 ? 55 : 55, width: Platform.OS === 'ios' ? ((widthScreen * 83) / 100) : (widthScreen - 65) }}>
         <Text style={styles.messageTextInstructions}>
               1. อ่านคำแจ้งเตือน / Follow alert notifications.{'\n'}
               2. สแกน QR-CODE หรือ กดเช็คอิน / Scan QR Code or Check in to identify your status.{'\n'}

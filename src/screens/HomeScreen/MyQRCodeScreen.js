@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, Button, Platform, StyleSheet, Image, ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, Platform, StyleSheet, Image, ImageBackground, Dimensions, TouchableOpacity, AsyncStorage, BackHandler } from 'react-native';
+
 import {
   APP_NAME, 
   COLOR_WHITE, 
@@ -27,42 +28,102 @@ class MyQRCodeScreen extends Component {
   static navigatorStyle = {
     tabBarHidden: false, navBarBackgroundColor: COLOR_RED, title: 'ALERT', navBarLeftButtonColor: '#fff', 
   };
+  constructor(props) {
+    super(props);
+    // this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
+    this.state = {
+      username: '',
+      password: '',
+      FirstName: '',
+      LastName: '',
+      qrCode64: '',
+      Company: '',
+      Department: '',
+      EmployeeNumber: '',
+      Phone: '',
+      PhoneEmer: '',
+      email: '',
+      Building: '',
+      Floor: '',
+    };
+    this.validAuthen();
+  }
+  onNavigatorEvent = (event) => {
+    console.log(event.id);
+  }
+  async validAuthen() {
+    console.log('validAuthen');
+    const dqrCode64 = await AsyncStorage.getItem('qrCode64');
+    console.log('dqrCode64', dqrCode64);
+    this.setState({ qrCode64: dqrCode64 });
+    console.log('qrCode64', this.state.qrCode64);
+  }
+  onNavigatorEvent(event) {
+    switch (event.id) {
+      case 'willAppear':
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+        break;
+      case 'willDisappear':
+        this.backPressed = 0;
+        this.backHandler.remove();
+        break;
+      default:
+        break;
+    }
+  }
+  onNavigatorEvent = (event) => {
+    console.log(event.id);
+  }
+  handleBackPress = () => {
+    if (this.backPressed && this.backPressed > 0) {
+      this.props.navigator.popToRoot({ animated: false });
+      return false;
+    }
+
+    this.backPressed = 1;
+    this.props.navigator.showSnackbar({
+      text: 'Press one more time to exit',
+      duration: 'long',
+    });
+    return true;
+  }
+  
   componentDidUpdate() {
     const window = Dimensions.get('window');
     console.warn('width:', window.width, 'height:', window.height);
   }
   placeSubmitHandler = () => {
+    // this.props.navigator.push({
+    //   screen: 'ScanQRScreen',
+    //   title: 'QR CODE RANDER',
+    //   navBarHidden: true,
+    // });
     this.props.navigator.push({
-      screen: 'ScanQRScreen',
-      title: 'QR CODE RANDER',
+      screen: 'IAmSafeScreen',
+      title: 'ALERT',
+      id: 'alertFire',
       navBarHidden: true,
+      navBarLeftButtonFontSize: 17, // Change font size of left nav bar button
+      navBarLeftButtonColor: 'red', // Change color of left nav bar button
+      navBarLeftButtonFontWeight: '400', // Change font weight of left nav bar button
     });
   };
   render() {
     return (
-      <View styles={styles.mainConatinerStyle}> 
-        {/* <ImageBackground source={backgroundImage} style={styles.backgroundImage}> */}
-        {/* <View style={[styles.myContainer, { height: heightScreen }]}>
-            <Text>dddd</Text>
-            <Button
-              title="QR CODE READER"
-              color="#7BAD41"
-              onPress={this.placeSubmitHandler} 
-              style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-            }}
-            />
-          </View> */}
-        <Button
-          title="QR CODE READER"
-          color="#7BAD41"
-          onPress={this.placeSubmitHandler} 
-          style={styles.floatingMenuButtonStyle}
-        />
-
-        {/* </ImageBackground> */}
+      <View style={[styles.mainConatinerStyle, { height: heightScreen, width: widthScreen }]}>
+        <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+          <Image
+            resizeMode="contain"
+            style={{ width: (widthScreen * 50) / 100, height: '100%', flex: 0.5 }}
+            source={{ uri: this.state.qrCode64 }}
+          />
+          <Text style={{ flex: 0.5, alignContent: 'center' }}>
+            Have Safety Officer Scan Your  QR CODE to Check in.
+            {'\n'}{'\n'}
+            ให้เจ้าหน้าที่ ทำการ สแกน QR CODE ของคุณเพื่อเช็คอิน
+          </Text>
+        </ImageBackground>
       </View>
     );
   }
@@ -74,6 +135,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     // flex: 1,
+    flexDirection: 'column',
+    flex: 1,
+    alignItems: 'center',
   },
   myContainer: {
     flexDirection: 'row', 
@@ -86,6 +150,8 @@ const styles = StyleSheet.create({
   mainConatinerStyle: {
     flexDirection: 'column',
     flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#000',
   }, 
   floatingMenuButtonStyle: {
     alignSelf: 'flex-end',

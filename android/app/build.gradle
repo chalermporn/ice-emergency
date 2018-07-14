@@ -151,7 +151,7 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-permission')
+    implementation project(':react-native-permission')
     implementation project(':react-native-fcm')
     implementation project(':react-native-navigation')
     implementation project(':react-native-vector-icons')

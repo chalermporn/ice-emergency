@@ -22,10 +22,12 @@ export default class ForGotPasswordScreen extends Component {
 
   };
   // noinspection JSAnnotator
-  state = {
-    email: 'test@test.com1',
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: '',
+    };
   }
-
   forgotPwdHandler = () => {
     // startMainTabs();
     axios.post('http://122.155.9.76/forgot_password.php', {

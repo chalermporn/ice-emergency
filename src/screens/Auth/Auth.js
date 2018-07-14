@@ -14,6 +14,7 @@ import {
   Keyboard,
   TouchableHighlight,
 } from 'react-native';
+import FCM, { FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType } from 'react-native-fcm';
 import axios from 'axios';
 import startMainTabs from '../MainTabs/startMainTabs';
 
@@ -39,7 +40,7 @@ export default class AuthScreen extends Component {
     this.state = {
       username: '',
       password: '',
-      notiToken: '000000',
+      notiToken: '',
     };
 
     this.validAuthen();
@@ -68,64 +69,75 @@ export default class AuthScreen extends Component {
   }
   async loginHandler() {
     console.log('on click');
-    const { username, password, notiToken } = this.state;
-    const data = { username, password, noti_token: notiToken };
     
-    console.log(`data: ${JSON.stringify(data)}`);
+    FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
     
-    axios.post('http://122.155.9.76:8080/login', data)
-      .then(async (response) => {
-        console.log(`response: ${JSON.stringify(response)}`);
-        const result = response.data;
-        if (result.success) {
+    FCM.getFCMToken().then((token) => {
+      console.log(token);
+      // store fcm token in your server
+      this.setState({ notiToken: token });
+    
+      const { username, password, notiToken } = this.state;
+      const data = { username, password, notiToken: token };
+    
+      console.log(`data: ${JSON.stringify(data)}`);
+    
+      axios.post('http://122.155.9.76:8080/login', data)
+        .then(async (response) => {
+          console.log(`response: ${JSON.stringify(response)}`);
+          const result = response.data;
+          if (result.success) {
           // save token
 
-          await AsyncStorage.setItem('username', result.username);
-          await AsyncStorage.setItem('password', result.password);
+            await AsyncStorage.setItem('Id', `${result.Id}` + '');
+            await AsyncStorage.setItem('username', result.username);
+            await AsyncStorage.setItem('password', result.password);
 
-          await AsyncStorage.setItem('success', 'true');
-          if (result.active === 1) {
-            await AsyncStorage.setItem('active', '1');
+            await AsyncStorage.setItem('success', 'true');
+            if (result.active === 1) {
+              await AsyncStorage.setItem('active', '1');
+            }
+
+            await AsyncStorage.setItem('FirstName', result.FirstName);
+            await AsyncStorage.setItem('LastName', result.LastName);
+            await AsyncStorage.setItem('EmployeeNumber', result.EmployeeNumber);
+            await AsyncStorage.setItem('Phone', result.Phone);
+            await AsyncStorage.setItem('PhoneEmer', result.PhoneEmer);
+            await AsyncStorage.setItem('email', result.email);
+            await AsyncStorage.setItem('Company', result.Company);
+            await AsyncStorage.setItem('Department', result.Department);
+            await AsyncStorage.setItem('Building', result.Building);
+            await AsyncStorage.setItem('Floor', result.Floor);
+            await AsyncStorage.setItem('DateOfBirth', result.DateOfBirth);
+            await AsyncStorage.setItem('Allergies', result.Allergies);
+            await AsyncStorage.setItem('Bloodtype', result.Bloodtype);
+            await AsyncStorage.setItem('Weight', result.Weight);
+            await AsyncStorage.setItem('Height', result.Height);
+            await AsyncStorage.setItem('username', result.username);
+            await AsyncStorage.setItem('password', result.password);
+            await AsyncStorage.setItem('imgProfile', result.imgProfile);
+            await AsyncStorage.setItem('active', result.LastName);
+            await AsyncStorage.setItem('notiToken', result.notiToken);
+            await AsyncStorage.setItem('token', result.token);
+            await AsyncStorage.setItem('qrCode', result.qrCode);
+            await AsyncStorage.setItem('message', result.message);
+            await AsyncStorage.setItem('qrCode64', result.qrCode64);
+
+            // show successful alert
+            Alert.alert(
+              'Login Successful', '',
+              [
+                { text: 'OK', onPress: () => startMainTabs() },
+              ],
+            );
+          } else {
+            Alert.alert('Login Failed');
           }
-
-          await AsyncStorage.setItem('FirstName', result.FirstName);
-          await AsyncStorage.setItem('LastName', result.LastName);
-          await AsyncStorage.setItem('EmployeeNumber', result.EmployeeNumber);
-          await AsyncStorage.setItem('Phone', result.Phone);
-          await AsyncStorage.setItem('PhoneEmer', result.PhoneEmer);
-          await AsyncStorage.setItem('email', result.email);
-          await AsyncStorage.setItem('Company', result.Company);
-          await AsyncStorage.setItem('Department', result.Department);
-          await AsyncStorage.setItem('Building', result.Building);
-          await AsyncStorage.setItem('Floor', result.Floor);
-          await AsyncStorage.setItem('DateOfBirth', result.DateOfBirth);
-          await AsyncStorage.setItem('Allergies', result.Allergies);
-          await AsyncStorage.setItem('Bloodtype', result.Bloodtype);
-          await AsyncStorage.setItem('Weight', result.Weight);
-          await AsyncStorage.setItem('Height', result.Height);
-          await AsyncStorage.setItem('username', result.username);
-          await AsyncStorage.setItem('password', result.password);
-          await AsyncStorage.setItem('img_profile', result.img_profile);
-          await AsyncStorage.setItem('active', result.LastName);
-          await AsyncStorage.setItem('noti_token', result.noti_token);
-          await AsyncStorage.setItem('token', result.token);
-          await AsyncStorage.setItem('qrCode', result.qrCode);
-          await AsyncStorage.setItem('message', result.message);
-
-          // show successful alert
-          Alert.alert(
-            'Login Successful', '',
-            [
-              { text: 'OK', onPress: () => startMainTabs() },
-            ],
-          );
-        } else {
-          Alert.alert('Login Failed');
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
   }
 
 
@@ -175,6 +187,7 @@ export default class AuthScreen extends Component {
               style={styles.input}
               secureTextEntry
               placeholder="Password"
+              underlineColorAndroid="transparent"
             />
             <Text style={[{ textAlign: 'right' }, stylesApp.defaltText]} onPress={this.forGotPasswordhHandlePress}> forgot
               password? 
