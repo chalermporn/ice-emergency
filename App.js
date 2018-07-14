@@ -1,6 +1,7 @@
 import { Navigation } from 'react-native-navigation';
 import configureStore from './src/store/configureStore';
 
+
 import AuthScreen from './src/screens/Auth/Auth';
 import ForGotPasswordScreen from './src/screens/Auth/ForGotPassword';
 import HomeScreen from './src/screens/HomeScreen/HomeScreen';
@@ -9,6 +10,7 @@ import Screen3 from './src/screens/HomeScreen/Screen3';
 import IAmSafeScreen from './src/screens/HomeScreen/IAmSafeScreen';
 import ScanQRScreen from './src/screens/HomeScreen/ScanQRScreen';
 import MyQRCodeScreen from './src/screens/HomeScreen/MyQRCodeScreen';
+import ShareScreen from './src/screens/HomeScreen/ShareScreen';
 
 
 import VitalInfoScreen from './src/screens/VitalInfoScreen/VitalInfoScreen';
@@ -27,6 +29,7 @@ Navigation.registerComponent('Screen3', () => Screen3);
 Navigation.registerComponent('IAmSafeScreen', () => IAmSafeScreen);
 Navigation.registerComponent('ScanQRScreen', () => ScanQRScreen);
 Navigation.registerComponent('MyQRCodeScreen', () => MyQRCodeScreen);
+Navigation.registerComponent('ShareScreen', () => ShareScreen);
 
 
 Navigation.registerComponent('VitalInfoScreen', () => VitalInfoScreen);
@@ -42,3 +45,4 @@ Navigation.startSingleScreenApp({
   },
 
 });
+

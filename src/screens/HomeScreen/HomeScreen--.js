@@ -20,7 +20,7 @@ import {
 class HomeScreen extends Component {
   static navigatorStyle = { navBarBackgroundColor: COLOR_RED };
   state = {
-    img_profile: '',
+    ImgProfile: '',
     defaultImage: '',
     base64Image: '',
   };
@@ -29,13 +29,13 @@ class HomeScreen extends Component {
     showData = async () => {
       const myA = await AsyncStorage.getItem('myProfile');
       const d = JSON.parse(myA);
-      console.log('bird', d.img_profile);
+      console.log('bird', d.ImgProfile);
       
-      this.setState({ img_profile: d.img_profile });
+      this.setState({ ImgProfile: d.ImgProfile });
       this.setState({ defaultImage: birdImage });
 
-      if (this.state.img_profile == null) {
-        this.setState({ base64Image: `data:image/png;base64,${this.state.img_profile}` });
+      if (this.state.ImgProfile == null) {
+        this.setState({ base64Image: `data:image/png;base64,${this.state.ImgProfile}` });
       } else {
         // this.setState({ base64Image:  });
         this.setState({ base64Image: this.state.defaultImage });

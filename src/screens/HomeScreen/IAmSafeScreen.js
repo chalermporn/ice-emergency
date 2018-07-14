@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, Button, Platform, StyleSheet, Image, ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, Platform, StyleSheet, Image, ImageBackground, Dimensions, TouchableOpacity, AsyncStorage } from 'react-native';
+import FCM, { FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType } from 'react-native-fcm';
+
 import {
   APP_NAME, 
   COLOR_WHITE, 
@@ -27,9 +29,47 @@ class IAmSafeScreen extends Component {
   static navigatorStyle = {
     tabBarHidden: false, navBarBackgroundColor: COLOR_RED, title: 'ALERT', navBarLeftButtonColor: '#fff', 
   };
-  componentDidUpdate() {
+  constructor(props) {
+    super(props);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
+    this.state = {
+      username: '',
+      password: '',
+      FirstName: '',
+      LastName: '',
+      ImgProfile: '',
+      Company: '',
+      Department: '',
+      EmployeeNumber: '',
+      Phone: '',
+      PhoneEmer: '',
+      email: '',
+      Building: '',
+      Floor: '',
+      Id: '',
+
+    };
+    this.validAuthen();
+  }
+  onNavigatorEvent = (event) => {
+    console.log(event.id);
+  }
+  componentDidMount() {
     const window = Dimensions.get('window');
     console.warn('width:', window.width, 'height:', window.height);
+    FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
+  
+    FCM.on(FCMEvent.Notification, async (notif) => {
+      console.log('หน้า สอง', notif);
+      if (notif.opened_from_tray && notif.collapse_key === 'com.iceemergency') {
+        // alert('check from server');
+        console.log('server', notif);
+      } else if (!notif.opened_from_tray) {
+        console.log(notif);
+        // alert(notif);
+      }
+    });
+    this.validAuthen();
   }
   placeSubmitHandler = () => {
     if (Platform.OS === 'ios') {
@@ -53,20 +93,70 @@ class IAmSafeScreen extends Component {
     return false;
     // this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(1));
   };
+
+  async validAuthen() {
+    console.log('validAuthen');
+    // AsyncStorage.clear();
+    const dId = await AsyncStorage.getItem('Id');
+    const dUsername = await AsyncStorage.getItem('username');
+    const dPassword = await AsyncStorage.getItem('password');
+    const dSuccess = await AsyncStorage.getItem('success');
+    const dActive = await AsyncStorage.getItem('active');
+    const dFirstName = await AsyncStorage.getItem('FirstName');
+    const dLastName = await AsyncStorage.getItem('LastName');
+    const dImgProfile = await AsyncStorage.getItem('imgProfile');
+    const dDepartment = await AsyncStorage.getItem('Department');
+    const dCompany = await AsyncStorage.getItem('Company');
+    const dEmployeeNumber = await AsyncStorage.getItem('EmployeeNumber');
+    const dPhone = await AsyncStorage.getItem('Phone');
+    const dPhoneEmer = await AsyncStorage.getItem('PhoneEmer');
+    const demail = await AsyncStorage.getItem('email');
+    const dBuilding = await AsyncStorage.getItem('Building');
+    const dFloor = await AsyncStorage.getItem('Floor');
+    
+    console.log('dUsername : ', dUsername);
+    console.log('dPassword : ', dPassword);
+    console.log('dSuccess : ', dSuccess);
+    console.log('dActive : ', dActive);
+
+    this.setState({ username: dUsername });
+    this.setState({ FirstName: dFirstName });
+    this.setState({ LastName: dLastName });
+    this.setState({ ImgProfile: dImgProfile });
+    this.setState({ Company: dCompany });
+    this.setState({ Department: dDepartment });
+    this.setState({ EmployeeNumber: dEmployeeNumber });
+    this.setState({ Phone: dPhone });
+    this.setState({ PhoneEmer: dPhoneEmer });
+    this.setState({ email: demail });
+    this.setState({ Building: dBuilding });
+    this.setState({ Floor: dFloor });
+    this.setState({ Id: dId });
+  }
+
   render() {
     return (
       <View style={{ justifyContent: 'center' }}> 
         <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
           <View style={styles.myContainer}>
             <View style={styles.myContainerImg}>
-              <Image source={profileImage} style={{ width: 100, height: 100, borderRadius: 68 }} />
+              <Image
+                style={{ width: 100, height: 100, borderRadius: 68 }}
+                source={{ uri: this.state.ImgProfile }}
+              />
             </View>
             <View style={styles.MyNames}>
-              <Text style={styles.MyNamesText}>Chalermporn Pos.</Text>
+              {/* <Text style={styles.MyNamesText}>Chalermporn Pos.</Text>
               <Text style={styles.MyNamesSubText}>ENCO | G FL. 093-949-9289</Text>
               <View style={styles.CallContact}>
                 <Text style={styles.Emergency}>Emergency Contact </Text>
                 <Text style={styles.MyNamesSubText}>093-949-9289</Text>
+              </View> */}
+              <Text style={styles.MyNamesText}>{this.state.username}</Text>
+              <Text style={styles.MyNamesSubText}>{this.state.Company} | {this.state.Floor} FL. {this.state.Phone}</Text>
+              <View style={styles.CallContact}>
+                <Text style={styles.Emergency}>Emergency Contact </Text>
+                <Text style={styles.MyNamesSubText}>{this.state.PhoneEmer}</Text>
               </View>
             </View>
           </View>
