@@ -62,13 +62,15 @@ class HomeScreen extends Component {
     });
     
     FCM.on(FCMEvent.Notification, async (notif) => {
-      console.log(notif);
+      console.log('notif', notif);
       if (notif.opened_from_tray && notif.collapse_key === 'com.iceemergency') {
         // alert('check from server');
-        console.log(notif);
+        console.log(notif.fcm);
       } else if (!notif.opened_from_tray) {
-        this.placeSubmitHandler();
+        // this.placeSubmitHandler();
       }
+
+      // await AsyncStorage.setItem('notif', notif);
     });
   }
   

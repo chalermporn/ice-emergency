@@ -62,10 +62,11 @@ class IAmSafeScreen extends Component {
     FCM.on(FCMEvent.Notification, async (notif) => {
       console.log('หน้า สอง', notif);
       if (notif.opened_from_tray && notif.collapse_key === 'com.iceemergency') {
-        alert('check from server');
-        console.log(notif);
+        // alert('check from server');
+        console.log('server', notif);
       } else if (!notif.opened_from_tray) {
-        alert(notif);
+        console.log(notif);
+        // alert(notif);
       }
     });
     this.validAuthen();
